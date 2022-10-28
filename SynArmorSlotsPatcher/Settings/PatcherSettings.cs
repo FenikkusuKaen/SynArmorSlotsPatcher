@@ -44,7 +44,7 @@ namespace SynArmorSlotsPatchers.Settings
         public HashSet<ModKey> IncludedMods_Source { get; set; } = new();
 
         [SynthesisOrder]
-        [SynthesisSettingName("Included Mods (Source)")]
+        [SynthesisSettingName("Included Mods (Override)")]
         [SynthesisTooltip("Only patch items overridden by those mods. Leave it blank to ignore.")]
         public HashSet<ModKey> IncludedMods_Override { get; set; } = new();
 

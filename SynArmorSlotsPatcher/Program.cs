@@ -55,7 +55,6 @@ namespace SynArmorSlotsPatchers
                             System.Console.WriteLine($"Processing {record.EditorID}");
                             if (!raceFormKeys.Any(x => x == record.Race.FormKey))
                             {
-                                System.Console.WriteLine($"Skipped race {record.Race.FormKey}");
                                 continue;
                             }
 
@@ -118,7 +117,6 @@ namespace SynArmorSlotsPatchers
                         System.Console.WriteLine($"Processing {record.EditorID}");
                         if (!raceFormKeys.Any(x => x == record.Race.FormKey))
                         {
-                            System.Console.WriteLine($"Skipped race {record.Race.FormKey}");
                             continue;
                         }
 
@@ -170,8 +168,6 @@ namespace SynArmorSlotsPatchers
                                 }
                             }
                         }
-
-                        System.Console.WriteLine($"Processed race {record.Race.FormKey}");
                     }
                 }
 
