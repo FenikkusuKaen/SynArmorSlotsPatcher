@@ -39,7 +39,6 @@ namespace SynArmorSlotsPatchers
                 }
                 var includedSources = settings.IncludedMods_Source.ToList();
                 var includedOverrides = settings.IncludedMods_Override.ToList();
-                var useIncluded = includedSources.Count > 0 || includedOverrides.Count > 0;
 
                 foreach (var perSlotSetting in settings.SlotSettings)
                 {
@@ -69,26 +68,16 @@ namespace SynArmorSlotsPatchers
                                 continue;
                             }
 
-                            if (useIncluded)
-                            {
-                                if (!includedSources.Contains(record.FormKey.ModKey))
-                                {
-                                    continue;
-                                }
-                            }
-
                             var overrideMods = state.LinkCache.ResolveAllContexts<IArmorAddon, IArmorAddonGetter>(record.FormKey).Where(x => !x.ModKey.Equals(record.FormKey.ModKey)).Select(x => x.ModKey);
                             if (overrideMods.Any(x => settings.ExcludedMods_Override.Contains(x)))
                             {
                                 continue;
                             }
 
-                            if (useIncluded)
+                            if (includedOverrides.Count > 0 && !overrideMods.Any(x => includedOverrides.Contains(x))
+                                || includedSources.Count > 0 && !includedSources.Contains(record.FormKey.ModKey))
                             {
-                                if (!overrideMods.Any(x => includedSources.Contains(x)))
-                                {
-                                    continue;
-                                }
+                                continue;
                             }
 
                             if (record.BodyTemplate is not null && record.BodyTemplate.FirstPersonFlags.HasFlag(rootSlot))
@@ -142,13 +131,6 @@ namespace SynArmorSlotsPatchers
                             continue;
                         }
 
-                        if (useIncluded)
-                        {
-                            if (!includedSources.Contains(record.FormKey.ModKey))
-                            {
-                                continue;
-                            }
-                        }
 
                         var overrideMods = state.LinkCache.ResolveAllContexts<IArmor, IArmorGetter>(record.FormKey).Where(x => !x.ModKey.Equals(record.FormKey.ModKey)).Select(x => x.ModKey);
                         if (overrideMods.Any(x => settings.ExcludedMods_Override.Contains(x)))
@@ -156,12 +138,10 @@ namespace SynArmorSlotsPatchers
                             continue;
                         }
 
-                        if (useIncluded)
+                        if (includedOverrides.Count > 0 && !overrideMods.Any(x => includedOverrides.Contains(x))
+                            || includedSources.Count > 0 && !includedSources.Contains(record.FormKey.ModKey))
                         {
-                            if (!overrideMods.Any(x => includedSources.Contains(x)))
-                            {
-                                continue;
-                            }
+                            continue;
                         }
 
                         if (record.BodyTemplate is not null && record.BodyTemplate.FirstPersonFlags.HasFlag(rootSlot))
