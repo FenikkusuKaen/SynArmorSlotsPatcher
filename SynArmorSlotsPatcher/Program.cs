@@ -37,12 +37,16 @@ namespace SynArmorSlotsPatchers
                         .Select(x => x.FormKey)
                         .ToList();
                 }
+                var includedSources = settings.IncludedMods_Source.ToList();
+                var includedOverrides = settings.IncludedMods_Override.ToList();
+                var useIncluded = includedSources.Count > 0 || includedOverrides.Count > 0;
 
                 foreach (var perSlotSetting in settings.SlotSettings)
                 {
                     var rootSlot = IntToSlot(perSlotSetting.SlotToModify);
                     var addedSlots = perSlotSetting.AddedSlots.Select(x => IntToSlot(x));
                     var removedSlots = perSlotSetting.RemovedSlots.Select(x => IntToSlot(x));
+
                     
                     if (settings.ArmorAddonSettings.EnableModule)
                     {
@@ -65,8 +69,27 @@ namespace SynArmorSlotsPatchers
                                 continue;
                             }
 
+                            if (useIncluded)
+                            {
+                                if (!includedSources.Contains(record.FormKey.ModKey))
+                                {
+                                    continue;
+                                }
+                            }
+
                             var overrideMods = state.LinkCache.ResolveAllContexts<IArmorAddon, IArmorAddonGetter>(record.FormKey).Where(x => !x.ModKey.Equals(record.FormKey.ModKey)).Select(x => x.ModKey);
-                            if (overrideMods.Any(x => settings.ExcludedMods_Override.Contains(x))) { continue; }
+                            if (overrideMods.Any(x => settings.ExcludedMods_Override.Contains(x)))
+                            {
+                                continue;
+                            }
+
+                            if (useIncluded)
+                            {
+                                if (!overrideMods.Any(x => includedSources.Contains(x)))
+                                {
+                                    continue;
+                                }
+                            }
 
                             if (record.BodyTemplate is not null && record.BodyTemplate.FirstPersonFlags.HasFlag(rootSlot))
                             {
@@ -114,10 +137,32 @@ namespace SynArmorSlotsPatchers
                             settings.ExcludedMods_Source.Contains(record.FormKey.ModKey) ||
                             (record.EditorID is not null &&
                                 (settings.ExcludedEditorIDs.Contains(record.EditorID) ||
-                                    settings.ExcludedEditorIDs_Partial.Where(x => record.EditorID.Contains(x)).Any()))) { continue; }
+                                    settings.ExcludedEditorIDs_Partial.Where(x => record.EditorID.Contains(x)).Any())))
+                        {
+                            continue;
+                        }
 
-                        var overrideMods = state.LinkCache.ResolveAllContexts<IArmorAddon, IArmorAddonGetter>(record.FormKey).Where(x => !x.ModKey.Equals(record.FormKey.ModKey)).Select(x => x.ModKey);
-                        if (overrideMods.Where(x => settings.ExcludedMods_Override.Contains(x)).Any()) { continue; }
+                        if (useIncluded)
+                        {
+                            if (!includedSources.Contains(record.FormKey.ModKey))
+                            {
+                                continue;
+                            }
+                        }
+
+                        var overrideMods = state.LinkCache.ResolveAllContexts<IArmor, IArmorGetter>(record.FormKey).Where(x => !x.ModKey.Equals(record.FormKey.ModKey)).Select(x => x.ModKey);
+                        if (overrideMods.Any(x => settings.ExcludedMods_Override.Contains(x)))
+                        {
+                            continue;
+                        }
+
+                        if (useIncluded)
+                        {
+                            if (!overrideMods.Any(x => includedSources.Contains(x)))
+                            {
+                                continue;
+                            }
+                        }
 
                         if (record.BodyTemplate is not null && record.BodyTemplate.FirstPersonFlags.HasFlag(rootSlot))
                         {

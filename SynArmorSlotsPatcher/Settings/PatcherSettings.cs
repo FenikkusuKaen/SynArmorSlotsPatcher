@@ -39,6 +39,16 @@ namespace SynArmorSlotsPatchers.Settings
         public HashSet<string> ExcludedEditorIDs_Partial { get; set; } = new();
 
         [SynthesisOrder]
+        [SynthesisSettingName("Included Mods (Source)")]
+        [SynthesisTooltip("Only patch items originated from those mods. Leave it blank to ignore.")]
+        public HashSet<ModKey> IncludedMods_Source { get; set; } = new();
+
+        [SynthesisOrder]
+        [SynthesisSettingName("Included Mods (Source)")]
+        [SynthesisTooltip("Only patch items overridden by those mods. Leave it blank to ignore.")]
+        public HashSet<ModKey> IncludedMods_Override { get; set; } = new();
+
+        [SynthesisOrder]
         [SynthesisSettingName("Excluded Mods (Source)")]
         [SynthesisTooltip("All items originated from those mods will be excluded.")]
         public HashSet<ModKey> ExcludedMods_Source { get; set; } = new();
