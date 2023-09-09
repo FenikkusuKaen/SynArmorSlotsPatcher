@@ -4,7 +4,6 @@ using Mutagen.Bethesda.Synthesis;
 using Mutagen.Bethesda.Skyrim;
 using Noggog;
 using SynArmorSlotsPatchers.Settings;
-using Microsoft.Extensions.Logging;
 
 namespace SynArmorSlotsPatchers
 {
